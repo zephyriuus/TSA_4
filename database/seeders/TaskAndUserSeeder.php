@@ -5,15 +5,18 @@ namespace Database\Seeders;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class TaskAndUserSeeder extends Seeder
 {
     public function run(): void
     {
         User::create([
+            'name' => 'Alezzandra Gregorio',
             'username' => 'alezzandra',
             'full_name' => 'Alezzandra Gregorio',
             'email' => 'alezzandra@example.com',
+            'password' => Hash::make('password'),
         ]);
 
         Task::create([

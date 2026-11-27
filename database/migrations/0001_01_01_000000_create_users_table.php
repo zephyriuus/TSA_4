@@ -10,9 +10,18 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('username')->unique();
-            $table->string('full_name');
-            $table->string('email');
+
+            // Breeze authentication fields
+            $table->string('name')->nullable();
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
+
+            // Existing TSA3 profile fields
+            $table->string('username')->nullable()->unique();
+            $table->string('full_name')->nullable();
+
             $table->timestamps();
         });
     }

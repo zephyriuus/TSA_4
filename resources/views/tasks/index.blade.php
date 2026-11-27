@@ -89,7 +89,13 @@
 <div class="container">
     <header>
         <h1>All Tasks</h1>
+        @auth
+            <a href="{{ route('tasks.create') }}">Create Task</a>
+        @endauth
 
+        @if (session('success'))
+            <p>{{ session('success') }}</p>
+        @endif
         <nav>
             <a href="/">Home</a>
             <a href="/tasks">Tasks</a>
@@ -102,6 +108,15 @@
         <h2>Task List</h2>
 
         @forelse ($tasks as $task)
+        @auth
+            <a href="{{ route('tasks.edit', $task) }}">Edit</a>
+
+            <form method="POST" action="{{ route('tasks.destroy', $task) }}">
+                @csrf
+                @method('DELETE')
+                <button type="submit">Archive</button>
+            </form>
+        @endauth
             <div class="task-card">
                 <h2>{{ $task->title }}</h2>
                 <p>Date: {{ $task->task_date->format('F d, Y') }}</p>
