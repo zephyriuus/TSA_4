@@ -36,4 +36,8 @@ Route::middleware('auth')->group(function () {
         ->name('tasks.destroy');
 });
 
+Route::get('/dashboard', function () {
+    return redirect()->route('tasks.index');
+})->middleware('auth')->name('dashboard');
+
 require __DIR__.'/auth.php';

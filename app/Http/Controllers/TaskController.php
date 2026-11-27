@@ -2,19 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\TaskCompletedMail;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 
 class TaskController extends Controller
 {
     public function index()
     {
-        $tasks = Task::where('is_archived', false)
-            ->orderBy('task_date')
-            ->get();
+        $tasks = Task::where(function ($query) {
+            $query->where('is_archived', false)
+                ->orWhereNull('is_archived');
+        })
+        ->orderBy('task_date')
+        ->get();
 
-        return view('tasks.index', compact('tasks'));
+        return view('tasks.index', [
+            'tasks' => $tasks,
+        ]);
     }
 
     public function create()
@@ -50,7 +57,17 @@ class TaskController extends Controller
             'task_date' => ['required', 'date'],
         ]);
 
+        $shouldSendEmail =
+            $task->status === 'pending' &&
+            $validated['status'] === 'done';
+
         $task->update($validated);
+
+        if ($shouldSendEmail) {
+            Mail::to(
+                env('TASK_NOTIFICATION_EMAIL', 'alezzandra@example.com')
+            )->send(new TaskCompletedMail($task));
+        }
 
         return redirect()
             ->route('tasks.index')
