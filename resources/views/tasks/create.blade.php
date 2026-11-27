@@ -1,36 +1,73 @@
 @include('partials.header', [
-    'title' => 'Create Task',
-    'active' => 'tasks'
+    'title' => 'Create Task'
 ])
 
-<section class="hero">
-    <h1>Create Task</h1>
+<section class="form-page">
+    <div class="form-card">
+        <h1>Create Task</h1>
 
-    @if ($errors->any())
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    @endif
+        <p class="form-description">
+            Add a new task to your task list.
+        </p>
 
-    <form method="POST" action="{{ route('tasks.store') }}">
-        @csrf
+        @if ($errors->any())
+            <div class="error-list">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-        <label>Task title</label>
-        <input type="text" name="title" value="{{ old('title') }}" required>
+        <form method="POST" action="{{ route('tasks.store') }}">
+            @csrf
 
-        <label>Status</label>
-        <select name="status" required>
-            <option value="pending">Pending</option>
-            <option value="done">Done</option>
-        </select>
+            <div class="form-group">
+                <label for="title">Task title</label>
 
-        <label>Task date</label>
-        <input type="date" name="task_date" value="{{ old('task_date') }}" required>
+                <input
+                    id="title"
+                    type="text"
+                    name="title"
+                    value="{{ old('title') }}"
+                    placeholder="Enter task title"
+                    required
+                >
+            </div>
 
-        <button type="submit">Create Task</button>
-    </form>
+            <div class="form-group">
+                <label for="status">Status</label>
+
+                <select id="status" name="status" required>
+                    <option value="pending">Pending</option>
+                    <option value="done">Done</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="task_date">Task date</label>
+
+                <input
+                    id="task_date"
+                    type="date"
+                    name="task_date"
+                    value="{{ old('task_date') }}"
+                    required
+                >
+            </div>
+
+            <div class="form-actions">
+                <button class="submit-button" type="submit">
+                    Create Task
+                </button>
+
+                <a class="cancel-button" href="{{ route('tasks.index') }}">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
 </section>
 
 @include('partials.footer')
