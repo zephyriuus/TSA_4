@@ -1,125 +1,162 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tasks for Today</title>
+@include('partials.header', [
+    'title' => 'Home'
+])
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+<style>
+    .home-page {
+        padding: 50px 0;
+    }
+
+    .home-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+    .home-heading h1 {
+        color: #75172d;
+        font-size: 32px;
+        font-weight: 700;
+    }
+
+    .home-description {
+        margin-top: 8px;
+        color: #ce4a4a;
+    }
+
+    .home-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .home-button {
+        display: inline-block;
+        padding: 11px 18px;
+        border-radius: 10px;
+        background: #ce4a4a;
+        color: white;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .home-button.secondary {
+        background: #f7c95c;
+        color: #5f4310;
+    }
+
+    .home-button:hover {
+        opacity: 0.85;
+    }
+
+    .today-task-list {
+        display: grid;
+        gap: 18px;
+    }
+
+    .today-task-card {
+        position: relative;
+        padding: 24px;
+        background: white;
+        border: 3px solid #ffb8e3;
+        border-radius: 20px;
+        box-shadow: 0 5px 0 #f5d6e8;
+    }
+
+    .today-task-card h2 {
+        max-width: 70%;
+        margin-bottom: 10px;
+        color: #75172d;
+        font-size: 23px;
+        font-weight: 700;
+    }
+
+    .today-task-date {
+        color: #ce4a4a;
+    }
+
+    .today-status {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        padding: 7px 14px;
+        border-radius: 999px;
+        color: white;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .today-status.pending {
+        background: #ff819c;
+    }
+
+    .today-status.done,
+    .today-status.completed {
+        background: #69b578;
+    }
+
+    .no-tasks {
+        padding: 25px;
+        background: white;
+        border-radius: 15px;
+        color: #ce4a4a;
+    }
+
+    @media (max-width: 700px) {
+        .home-heading {
+            align-items: flex-start;
+            flex-direction: column;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #fff8f2;
-            color: #75172d;
+        .home-actions {
+            flex-wrap: wrap;
         }
 
-        .container {
-            width: 90%;
-            max-width: 1000px;
-            margin: auto;
+        .today-task-card h2 {
+            max-width: 100%;
         }
 
-        header {
-            margin-top: 25px;
-            padding: 25px;
-            background: #fef9b7;
-            border-radius: 25px;
-            box-shadow: 0 6px 0 #fbdd95;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header h1 {
-            color: #ce4a4a;
-        }
-
-        nav a {
-            margin-left: 15px;
-            color: #ce4a4a;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        nav a:hover {
-            color: #ff819c;
-        }
-
-        main {
-            padding: 45px 0;
-        }
-
-        .task-card {
-            margin-top: 20px;
-            padding: 20px;
-            background: white;
-            border: 3px solid #ffb8e3;
-            border-radius: 20px;
-        }
-
-        .task-card h3 {
-            color: #75172d;
-        }
-
-        .task-card p {
-            margin-top: 8px;
-            color: #ce4a4a;
-        }
-
-        .status {
+        .today-status {
+            position: static;
             display: inline-block;
-            margin-top: 12px;
-            padding: 5px 12px;
-            border-radius: 20px;
-            background: #ff819c;
-            color: white;
-            font-size: 13px;
+            margin-top: 15px;
         }
+    }
+</style>
 
-        footer {
-            padding: 25px 0;
-            text-align: center;
-            color: #ce4a4a;
-        }
-    </style>
-</head>
-<body>
+<section class="home-page">
+    <div class="home-heading">
+        <div>
+            <h1>Today's Tasks</h1>
+        </div>
 
-<div class="container">
-    <header>
-        <h1>Tasks for Today</h1>
+        <div class="home-actions">
+            <a class="home-button" href="{{ route('tasks.index') }}">
+                View All Tasks
+            </a>
+        </div>
+    </div>
 
-        <nav>
-            <a href="/">Home</a>
-            <a href="/tasks">Tasks</a>
-            <a href="/profile">Profile</a>
-            <a href="/about">About</a>
-        </nav>
-    </header>
-
-    <main>
-        <h2>Today's Tasks</h2>
-
+    <section class="today-task-list">
         @forelse ($tasks as $task)
-            <div class="task-card">
-                <h3>{{ $task->title }}</h3>
-                <p>Date: {{ $task->task_date->format('F d, Y') }}</p>
-                <span class="status">{{ ucfirst($task->status) }}</span>
-            </div>
+            <article class="today-task-card">
+                <h2>{{ $task->title }}</h2>
+
+                <p class="today-task-date">
+                    Due: {{ $task->task_date->format('F d, Y') }}
+                </p>
+
+                <span class="today-status {{ strtolower($task->status) }}">
+                    {{ ucfirst($task->status) }}
+                </span>
+            </article>
         @empty
-            <p>No tasks scheduled for today.</p>
+            <p class="no-tasks">
+                You have no tasks scheduled for today.
+            </p>
         @endforelse
-    </main>
+    </section>
+</section>
 
-    <footer>
-        <p>© 2026 Tasks for Today</p>
-    </footer>
-</div>
-
-</body>
-</html>
+@include('partials.footer')

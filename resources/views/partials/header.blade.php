@@ -215,13 +215,13 @@
                     @auth
                         <a href="{{ url('/profile') }}">Profile</a>
 
-                        <form method="POST" action="{{ route('logout') }}">
+                        <!-- <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
                             <button class="logout-button" type="submit">
                                 Log out
                             </button>
-                        </form>
+                        </form> -->
                     @else
                         <a href="{{ route('login') }}">Log in</a>
                     @endauth
